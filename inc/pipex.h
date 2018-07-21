@@ -6,7 +6,7 @@
 /*   By: ahrytsen <ahrytsen@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/21 11:55:48 by ahrytsen          #+#    #+#             */
-/*   Updated: 2018/07/21 15:05:27 by ahrytsen         ###   ########.fr       */
+/*   Updated: 2018/07/21 20:56:41 by ahrytsen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,12 @@ typedef struct s_cmd	t_cmd;
 struct					s_cmd
 {
 	pid_t	pid;
-	char 	**argv;
 	int		std_in;
 	int		std_out;
-	t_cmd	*next;
-	t_cmd	*prev;
+	int		ret;
+	char 	**argv;
 };
+
+int						ft_exec(t_list *cmds, t_list *prev);
 
 #endif

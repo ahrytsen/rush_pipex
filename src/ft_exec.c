@@ -6,7 +6,7 @@
 /*   By: ahrytsen <ahrytsen@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/21 12:45:08 by ahrytsen          #+#    #+#             */
-/*   Updated: 2018/07/21 15:06:41 by ahrytsen         ###   ########.fr       */
+/*   Updated: 2018/07/21 20:58:05 by ahrytsen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,10 @@ static int	ft_exec_bypath(t_cmd *cmd, char *path)
 	if (path && !access(path, F_OK) && !access(path, X_OK)
 		&& !stat(path, &tmp) && S_ISREG(tmp.st_mode))
 	{
-		if ((cmd->pid = fork()) > 0)
-			return (0);
-		else if (cmd->pid < 0)
-			return (ft_dprintf(2, "%s: fork error\n", *(cmd->argv)));
+		if ((cmd->pid = fork()))
+			return (cmd < 0 ? ft_dprintf(2, "%s: fork error\n", path) : 0);
 		execve(path, cmd->argv, environ);
-		exit(1);
+		_exit(1);
 	}
 	if (access(path, F_OK)
 		&& ft_dprintf(2, "%s: No such file or directory\n", *cmd))
@@ -44,7 +42,7 @@ static char	**ft_get_path(void)
 	i = 0;
 	while (environ[i] && ft_strcmp(environ[i], "PATH") != '=')
 		i++;
-	path = environ[i];
+	path = ft_strchr(environ[i] ? environ[i] : "", '=');
 	return (path ? ft_strsplit(path, ':') : NULL);
 }
 
@@ -62,7 +60,7 @@ static char	*ft_search_bin(char *bin_name)
 	{
 		if (!(exec_path = malloc(ft_strlen(path[i]) + ft_strlen(bin_name) + 2)))
 			break ;
-		ft_strcpy(exec_path, path[i]);
+		ft_strcpy(exec_path, path[i++]);
 		ft_strcat(exec_path, "/");
 		ft_strcat(exec_path, bin_name);
 		if (!access(exec_path, F_OK))
@@ -73,7 +71,7 @@ static char	*ft_search_bin(char *bin_name)
 	return (exec_path);
 }
 
-int			ft_exec(t_cmd *cmd)
+static int	ft_exec_cmd(t_cmd *cmd)
 {
 	char	*bin_path;
 	int		st;
@@ -87,4 +85,49 @@ int			ft_exec(t_cmd *cmd)
 		st = ft_dprintf(2, "%s: command not found\n", *(cmd->argv));
 	free(bin_path);
 	return (st);
+}
+
+static int	ft_pl_make(int pl[2], t_list *cmd, t_list *prev)
+{
+	if (prev)
+	{
+		dup2(pl[0], 0);
+		close(pl[0]);
+		close(pl[1]);
+	}
+	if (cmd->next)
+	{
+		if (pipe(pl) && ft_dprintf(2, "21sh: pipe error\n"))
+			return (1);
+		dup2(pl[1], 1);
+	}
+	return (0);
+}
+
+int			ft_exec(t_list *cmds, t_list *prev)
+{
+	int		pl[2];
+	int		ret;
+	t_cmd	*cmd;
+
+	while (cmds)
+	{
+		cmd = cmds->content;
+		if ((ret = ft_pl_make(pl, cmds, prev))
+			|| (ret = ft_exec_cmd(cmds->content)))
+			break ;
+		if (!cmds->next)
+		{
+			close(pl[0]);
+			close(pl[1]);
+			close(0);
+			close(1);
+//			waitpid(cmd->pid, &ret, 0);
+		}
+		prev = cmds;
+		cmds = cmds->next;
+	}
+//	while (wait(NULL) > 0)
+//		;
+	return (ret);
 }
