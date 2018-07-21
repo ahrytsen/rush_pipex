@@ -6,7 +6,7 @@
 #    By: ahrytsen <ahrytsen@student.unit.ua>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/12/30 18:43:03 by ahrytsen          #+#    #+#              #
-#    Updated: 2018/07/21 12:18:12 by ahrytsen         ###   ########.fr        #
+#    Updated: 2018/07/21 14:33:24 by ahrytsen         ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -19,6 +19,7 @@ SUB_OBJ		=	libftprintf.a
 INC_LIB		=	-L./libft -lftprintf
 
 SRC			=	main.c\
+				ft_exec.c
 
 HDR			=	inc/pipex.h
 LIBFT		=	libft/libftprintf.a
