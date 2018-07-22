@@ -6,7 +6,7 @@
 /*   By: ahrytsen <ahrytsen@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/21 11:55:48 by ahrytsen          #+#    #+#             */
-/*   Updated: 2018/07/21 20:56:41 by ahrytsen         ###   ########.fr       */
+/*   Updated: 2018/07/22 12:54:38 by ahrytsen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ struct					s_cmd
 	pid_t	pid;
 	int		std_in;
 	int		std_out;
+	int		to_close;
 	int		ret;
 	char 	**argv;
 };

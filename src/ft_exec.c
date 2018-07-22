@@ -6,7 +6,7 @@
 /*   By: ahrytsen <ahrytsen@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/21 12:45:08 by ahrytsen          #+#    #+#             */
-/*   Updated: 2018/07/21 20:58:05 by ahrytsen         ###   ########.fr       */
+/*   Updated: 2018/07/22 13:02:37 by ahrytsen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,9 @@ static int	ft_exec_bypath(t_cmd *cmd, char *path)
 	{
 		if ((cmd->pid = fork()))
 			return (cmd < 0 ? ft_dprintf(2, "%s: fork error\n", path) : 0);
+		dup2(cmd->std_in, 0);
+		dup2(cmd->std_out, 1);
+		cmd->to_close ? close(cmd->to_close) : 0;
 		execve(path, cmd->argv, environ);
 		_exit(1);
 	}
@@ -87,47 +90,40 @@ static int	ft_exec_cmd(t_cmd *cmd)
 	return (st);
 }
 
-static int	ft_pl_make(int pl[2], t_list *cmd, t_list *prev)
+static int	ft_pl_make(t_cmd *cmd, t_cmd *next)
 {
-	if (prev)
-	{
-		dup2(pl[0], 0);
-		close(pl[0]);
-		close(pl[1]);
-	}
-	if (cmd->next)
+	int		pl[2];
+
+	if (next)
 	{
 		if (pipe(pl) && ft_dprintf(2, "21sh: pipe error\n"))
 			return (1);
-		dup2(pl[1], 1);
+		cmd->std_out = pl[1];
+		cmd->to_close = pl[0];
+		next->std_in = pl[0];
 	}
 	return (0);
 }
 
 int			ft_exec(t_list *cmds, t_list *prev)
 {
-	int		pl[2];
 	int		ret;
 	t_cmd	*cmd;
 
 	while (cmds)
 	{
 		cmd = cmds->content;
-		if ((ret = ft_pl_make(pl, cmds, prev))
-			|| (ret = ft_exec_cmd(cmds->content)))
+		if ((ret = ft_pl_make(cmd, cmds->next ? cmds->next->content : NULL))
+			|| (ret = ft_exec_cmd(cmd)))
 			break ;
+		close(cmd->std_in);
+		close(cmd->std_out);
 		if (!cmds->next)
-		{
-			close(pl[0]);
-			close(pl[1]);
-			close(0);
-			close(1);
-//			waitpid(cmd->pid, &ret, 0);
-		}
+			waitpid(cmd->pid, &ret, 0);
 		prev = cmds;
 		cmds = cmds->next;
 	}
-//	while (wait(NULL) > 0)
-//		;
+	while (wait(NULL) > 0)
+		;
 	return (ret);
 }
