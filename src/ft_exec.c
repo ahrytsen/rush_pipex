@@ -6,7 +6,7 @@
 /*   By: ahrytsen <ahrytsen@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/21 12:45:08 by ahrytsen          #+#    #+#             */
-/*   Updated: 2018/07/22 14:56:22 by ahrytsen         ###   ########.fr       */
+/*   Updated: 2018/07/22 18:10:30 by ahrytsen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ static int	ft_exec_bypath(t_cmd *cmd, char *path)
 		dup2(cmd->std_out, 1);
 		cmd->to_close ? close(cmd->to_close) : 0;
 		execve(path, cmd->argv, environ);
+		ft_dprintf(2, "%s: execve() failed\n");
 		_exit(1);
 	}
 	if (access(path, F_OK)
