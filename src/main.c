@@ -6,7 +6,7 @@
 /*   By: ahrytsen <ahrytsen@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/21 11:52:27 by ahrytsen          #+#    #+#             */
-/*   Updated: 2018/07/22 13:26:40 by ahrytsen         ###   ########.fr       */
+/*   Updated: 2018/07/22 14:42:17 by ahrytsen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ static t_list	*ft_makecmd(int ac, char **av, int in_out[2])
 		ft_bzero(&tmp, sizeof(t_cmd));
 		i == 2 ? (tmp.std_in = in_out[0]) : 0;
 		i == ac - 2 ? (tmp.std_out = in_out[1]) : 0;
+		tmp.cmd = av[i];
 		if (!(tmp.argv = ft_strsplit(av[i], ' '))
 			|| !ft_lstpush_back(&cmd, &tmp, sizeof(tmp)))
 		{

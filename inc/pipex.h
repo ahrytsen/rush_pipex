@@ -6,7 +6,7 @@
 /*   By: ahrytsen <ahrytsen@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/21 11:55:48 by ahrytsen          #+#    #+#             */
-/*   Updated: 2018/07/22 13:27:16 by ahrytsen         ###   ########.fr       */
+/*   Updated: 2018/07/22 14:41:39 by ahrytsen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ struct					s_cmd
 	int		std_out;
 	int		to_close;
 	int		ret;
+	char	*cmd;
 	char	**argv;
 };
 
