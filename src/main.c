@@ -6,13 +6,13 @@
 /*   By: ahrytsen <ahrytsen@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/21 11:52:27 by ahrytsen          #+#    #+#             */
-/*   Updated: 2018/07/21 20:31:23 by ahrytsen         ###   ########.fr       */
+/*   Updated: 2018/07/22 13:26:40 by ahrytsen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <pipex.h>
 
-static void	lst_del(void *content, size_t size)
+static void		lst_del(void *content, size_t size)
 {
 	t_cmd	*cmd;
 
@@ -65,12 +65,13 @@ static int		ft_open_files(int ac, char **av, int in_out[2])
 	return (0);
 }
 
-int			main(int ac, char **av)
+int				main(int ac, char **av)
 {
 	int		in_out[2];
 	t_list	*cmds;
+
 	if (ft_open_files(ac, av, in_out)
 		|| !(cmds = ft_makecmd(ac, av, in_out)))
 		return (1);
-	return (ft_exec(cmds, NULL));
+	return (ft_exec(cmds));
 }

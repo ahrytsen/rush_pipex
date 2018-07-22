@@ -6,7 +6,7 @@
 /*   By: ahrytsen <ahrytsen@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/21 12:45:08 by ahrytsen          #+#    #+#             */
-/*   Updated: 2018/07/22 13:02:37 by ahrytsen         ###   ########.fr       */
+/*   Updated: 2018/07/22 13:25:52 by ahrytsen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,40 +90,27 @@ static int	ft_exec_cmd(t_cmd *cmd)
 	return (st);
 }
 
-static int	ft_pl_make(t_cmd *cmd, t_cmd *next)
+int			ft_exec(t_list *cmds)
 {
 	int		pl[2];
+	int		ret;
+	t_cmd	*cmd;
 
-	if (next)
+	cmd = cmds->content;
+	if (cmds->next)
 	{
 		if (pipe(pl) && ft_dprintf(2, "21sh: pipe error\n"))
 			return (1);
 		cmd->std_out = pl[1];
 		cmd->to_close = pl[0];
-		next->std_in = pl[0];
+		((t_cmd*)(cmds->next->content))->std_in = pl[0];
 	}
-	return (0);
-}
-
-int			ft_exec(t_list *cmds, t_list *prev)
-{
-	int		ret;
-	t_cmd	*cmd;
-
-	while (cmds)
-	{
-		cmd = cmds->content;
-		if ((ret = ft_pl_make(cmd, cmds->next ? cmds->next->content : NULL))
-			|| (ret = ft_exec_cmd(cmd)))
-			break ;
-		close(cmd->std_in);
-		close(cmd->std_out);
-		if (!cmds->next)
-			waitpid(cmd->pid, &ret, 0);
-		prev = cmds;
-		cmds = cmds->next;
-	}
-	while (wait(NULL) > 0)
-		;
+	if ((ret = ft_exec_cmd(cmd)))
+		return (ret);
+	close(cmd->std_in);
+	close(cmd->std_out);
+	if (cmds->next)
+		ret = ft_exec(cmds->next);
+	waitpid(cmd->pid, !cmds->next ? &ret : NULL, 0);
 	return (ret);
 }
