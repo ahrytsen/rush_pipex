@@ -6,7 +6,7 @@
 /*   By: ahrytsen <ahrytsen@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/21 12:45:08 by ahrytsen          #+#    #+#             */
-/*   Updated: 2018/07/22 14:42:59 by ahrytsen         ###   ########.fr       */
+/*   Updated: 2018/07/22 14:56:22 by ahrytsen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ static int	ft_exec_cmd(t_cmd *cmd)
 	int		st;
 
 	bin_path = NULL;
-	if ((cmd->argv) || !*(cmd->argv))
+	if (!cmd->argv || !*(cmd->argv))
 		st = ft_dprintf(2, "%s: command not found\n", cmd->cmd);
 	else if (ft_strchr(*(cmd->argv), '/'))
 		st = ft_exec_bypath(cmd, *(cmd->argv));
