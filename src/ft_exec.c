@@ -6,7 +6,7 @@
 /*   By: ahrytsen <ahrytsen@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/21 12:45:08 by ahrytsen          #+#    #+#             */
-/*   Updated: 2018/07/22 13:48:26 by ahrytsen         ###   ########.fr       */
+/*   Updated: 2018/07/22 14:02:00 by ahrytsen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ static int	ft_exec_bypath(t_cmd *cmd, char *path)
 	if (access(path, F_OK)
 		&& ft_dprintf(2, "%s: No such file or directory\n", *(cmd->argv)))
 		return (1);
-	ft_dprintf(2, "lolka\n");
 	S_ISDIR(tmp.st_mode) ? ft_dprintf(2, "%s: is a directory\n", *(cmd->argv))
 		: ft_dprintf(2, "%s: permission denied\n", *(cmd->argv));
 	return (1);
